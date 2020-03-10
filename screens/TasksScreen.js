@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   ScrollView,
   TouchableNativeFeedback,
-  TouchableOpacity
-} from "react-native";
-import Logo from "../components/Logo";
-import AddTask from "../components/AddTask";
-import Task from "../components/Task";
-import TaskInput from "../components/TaskInput";
-import firebase from "../components/Firebase";
+  TouchableOpacity,
+} from 'react-native';
+import Logo from '../components/Logo';
+import AddTask from '../components/AddTask';
+import Task from '../components/Task';
+import TaskInput from '../components/TaskInput';
+import firebase from '../components/Firebase';
 
 export default function TasksScreen() {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [fetchedTasks, setFetchedTasks] = useState([]);
-  const [newTask, setNewTask] = useState("");
+  const [newTask, setNewTask] = useState('');
+  const [completed, setCompleted] = useState(false);
   const currentUser = firebase.auth().currentUser.uid;
 
   useEffect(() => {
     firebase
       .firestore()
-      .collection("users")
+      .collection('users')
       .doc(currentUser)
-      .collection("todos")
+      .collection('todos')
       .get()
       .then(snapshot => {
         return snapshot.docs.map(doc => doc.data());
@@ -34,7 +35,7 @@ export default function TasksScreen() {
         setTasks(data);
       });
     return () => {
-      console.log("unmounted fetch data");
+      console.log('unmounted fetch data');
     };
   }, [fetchedTasks]);
 
@@ -45,22 +46,47 @@ export default function TasksScreen() {
   const handleNewTask = () => {
     firebase
       .firestore()
-      .collection("users")
+      .collection('users')
       .doc(currentUser)
-      .collection("todos")
+      .collection('todos')
       .add({
         item: newTask,
-        id: Math.random()
+        id: Math.random(),
+        completed: completed,
       });
-    setFetchedTasks(newTask);
+    setFetchedTasks(Math.random);
 
-    setNewTask("");
+    setNewTask('');
     setIsModalOpened(false);
   };
 
   const handleCancelAddEvent = () => {
     console.log(tasks);
     setIsModalOpened(false);
+  };
+
+  const handleComplete = (id, Taskcompleted) => {
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(currentUser)
+      .collection('todos')
+      .get()
+      .then(snapshot => {
+        const selectedDoc = snapshot.docs.find(doc => doc.data().id === id).id;
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(currentUser)
+          .collection('todos')
+          .doc(selectedDoc)
+          .update({
+            completed: !Taskcompleted,
+          })
+          .then(() => {
+            setFetchedTasks(Math.random);
+          });
+      });
   };
 
   const onInputChange = value => {
@@ -70,21 +96,21 @@ export default function TasksScreen() {
   const handleDelete = id => {
     firebase
       .firestore()
-      .collection("users")
+      .collection('users')
       .doc(currentUser)
-      .collection("todos")
+      .collection('todos')
       .get()
       .then(snapshot => {
         const selectedDoc = snapshot.docs.find(doc => doc.data().id === id).id;
         firebase
           .firestore()
-          .collection("users")
+          .collection('users')
           .doc(currentUser)
-          .collection("todos")
+          .collection('todos')
           .doc(selectedDoc)
           .delete()
           .then(() => {
-            setFetchedTasks("");
+            setFetchedTasks(Math.random);
           });
       });
   };
@@ -95,8 +121,7 @@ export default function TasksScreen() {
         <Logo />
         <TouchableOpacity
           style={styles.logoutContainer}
-          onPress={() => firebase.auth().signOut()}
-        >
+          onPress={() => firebase.auth().signOut()}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
         <AddTask handleClick={triggerModal} />
@@ -117,6 +142,8 @@ export default function TasksScreen() {
               onDelete={handleDelete}
               key={task.id}
               item={task.item}
+              onComplete={handleComplete}
+              completed={task.completed}
             />
           ))}
         </View>
@@ -128,38 +155,38 @@ export default function TasksScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1b262c"
+    backgroundColor: '#1b262c',
   },
   logoContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tasksList: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start"
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   listHeader: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    textDecorationStyle: "solid",
+    textDecorationStyle: 'solid',
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: 'center',
   },
   scrollView: {
-    flex: 1
+    flex: 1,
   },
   logoutContainer: {
-    width: "30%",
-    backgroundColor: "#0f4c81",
+    width: '30%',
+    backgroundColor: '#0f4c81',
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderRadius: 100,
-    marginBottom: 20
+    marginBottom: 20,
   },
   logoutText: {
-    color: "#fff",
-    textAlign: "center"
-  }
+    color: '#fff',
+    textAlign: 'center',
+  },
 });
