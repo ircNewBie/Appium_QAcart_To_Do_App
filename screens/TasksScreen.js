@@ -133,9 +133,9 @@ export default function TasksScreen() {
           cancelAddEvent={handleCancelAddEvent}
         />
       </View>
-      <Text style={styles.listHeader}>All Tasks</Text>
       <ScrollView style={styles.scrollView}>
         <View style={styles.tasksList}>
+          <Text style={styles.listHeader}>All Tasks</Text>
           {tasks.map(task => (
             <Task
               id={task.id}
