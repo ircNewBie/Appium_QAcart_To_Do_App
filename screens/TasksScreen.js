@@ -116,10 +116,11 @@ export default function TasksScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} accessible={false}>
       <View style={styles.logoContainer}>
         <Logo />
         <TouchableOpacity
+          accessible={false}
           style={styles.logoutContainer}
           onPress={() => firebase.auth().signOut()}>
           <Text style={styles.logoutText}>Logout</Text>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -8,16 +8,16 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  ActivityIndicator
-} from "react-native";
+  ActivityIndicator,
+} from 'react-native';
 
-import Logo from "../components/Logo";
-import firebase from "../components/Firebase";
+import Logo from '../components/Logo';
+import firebase from '../components/Firebase';
 
 const SignupScreen = props => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [isLaoding, setIsLoading] = useState(false);
@@ -30,33 +30,35 @@ const SignupScreen = props => {
       .then(user => {
         firebase
           .firestore()
-          .collection("users")
+          .collection('users')
           .doc(user.user.uid)
           .set({
             fullName,
-            email
+            email,
           })
           .catch(error => {
             console.log(error.message);
           });
       })
       .then(() => {
-        setFullName("");
-        setEmail("");
-        setPassword("");
+        setFullName('');
+        setEmail('');
+        setPassword('');
         setIsLoading(false);
       })
       .catch(error => {
         setShowError(true);
         setErrorMessage(error.message);
-        setEmail("");
-        setPassword("");
+        setEmail('');
+        setPassword('');
         setIsLoading(false);
       });
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback
+      onPress={() => Keyboard.dismiss()}
+      accessible={false}>
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Logo />
@@ -87,8 +89,7 @@ const SignupScreen = props => {
             ) : (
               <TouchableOpacity
                 style={styles.loginButton}
-                onPress={handleSignup}
-              >
+                onPress={handleSignup}>
                 <Text style={styles.buttonText}>Signup</Text>
               </TouchableOpacity>
             )}
@@ -97,8 +98,7 @@ const SignupScreen = props => {
             ) : null}
             <TouchableOpacity
               style={styles.signupButton}
-              onPress={() => props.navigation.navigate("Login")}
-            >
+              onPress={() => props.navigation.navigate('Login')}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -111,58 +111,58 @@ const SignupScreen = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1b262c",
-    justifyContent: "center",
-    alignItems: "center"
+    backgroundColor: '#1b262c',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loginContainer: {
     flex: 1,
-    width: "100%",
-    justifyContent: "flex-start",
-    alignItems: "center"
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   scrollContainer: {
-    width: "100%"
+    width: '100%',
   },
   textInput: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginBottom: 20,
-    width: "80%",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 100
-  },
-  loginButton: {
-    width: "80%",
-    backgroundColor: "#ed6663",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderRadius: 100
-  },
-  signupButton: {
-    width: "80%",
-    backgroundColor: "#ffa372",
+    width: '80%',
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderRadius: 100,
-    marginTop: 20
+  },
+  loginButton: {
+    width: '80%',
+    backgroundColor: '#ed6663',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 100,
+  },
+  signupButton: {
+    width: '80%',
+    backgroundColor: '#ffa372',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 100,
+    marginTop: 20,
   },
   buttonText: {
-    color: "#1b262c",
-    textAlign: "center"
+    color: '#1b262c',
+    textAlign: 'center',
   },
   error: {
     marginVertical: 20,
-    color: "red",
+    color: 'red',
     fontSize: 18,
-    textAlign: "center",
-    padding: 20
-  }
+    textAlign: 'center',
+    padding: 20,
+  },
 });
 
 export default SignupScreen;

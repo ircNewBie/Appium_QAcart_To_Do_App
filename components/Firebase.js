@@ -1,7 +1,7 @@
-import * as firebase from "firebase";
-import "firebase/firestore";
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
-import config from "../env";
+import config from '../env';
 
 firebase.initializeApp(config);
 
